@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 pipeline= joblib.load("pipeline_2.joblib") # Lo estoy probando con un modelo de otros ODS que me pasaron
+# pipeline = joblib.load("modelo_tfidf_randomforest.joblib") # Este es el modelo que se generó en la etapa 2
 
 templates = Jinja2Templates(directory="templates")
 
