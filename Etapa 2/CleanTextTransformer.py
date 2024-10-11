@@ -1,13 +1,17 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-import re
+import re,string, unicodedata
 import nltk
 import pandas as pd
 from nltk.corpus import stopwords
 from nltk.stem import LancasterStemmer, WordNetLemmatizer
-
+import contractions
+import ftfy
+from nltk import word_tokenize, sent_tokenize
+import inflect
 
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
+nltk.download('wordnet')
 
 class CleanTextTransformer(BaseEstimator, TransformerMixin):
 
@@ -125,14 +129,14 @@ class CleanTextTransformer(BaseEstimator, TransformerMixin):
         return nuevas_palabras
 
     def obtener_raices(self,palabras):
-        raices = [stemmer.stem(palabra) for palabra in palabras]
+        raices = [self.stemmer.stem(palabra) for palabra in palabras]
         return raices
 
     def lematizar_verbos(self,palabras):
         # Lematizar los verbos
         lemas = []
         for palabra in palabras:
-            lema = lemmatizer.lemmatize(palabra)
+            lema = self.lemmatizer.lemmatize(palabra)
             lemas.append(lema)
         return lemas
 
