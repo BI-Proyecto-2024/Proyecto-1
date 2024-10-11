@@ -9,10 +9,6 @@ import ftfy
 from nltk import word_tokenize, sent_tokenize
 import inflect
 
-nltk.download('stopwords', quiet=True)
-nltk.download('punkt', quiet=True)
-nltk.download('wordnet')
-
 class CleanTextTransformer(BaseEstimator, TransformerMixin):
 
 
