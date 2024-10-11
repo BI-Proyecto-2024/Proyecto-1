@@ -2,9 +2,13 @@ from sklearn.base import BaseEstimator, TransformerMixin
 import re
 import nltk
 import pandas as pd
+from nltk.corpus import stopwords
+from nltk.stem import LancasterStemmer, WordNetLemmatizer
+
 
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
+
 class CleanTextTransformer(BaseEstimator, TransformerMixin):
 
 
