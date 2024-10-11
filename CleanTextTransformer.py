@@ -1,5 +1,10 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 import re
+import nltk
+import pandas as pd
+
+nltk.download('stopwords', quiet=True)
+nltk.download('punkt', quiet=True)
 class CleanTextTransformer(BaseEstimator, TransformerMixin):
 
 
