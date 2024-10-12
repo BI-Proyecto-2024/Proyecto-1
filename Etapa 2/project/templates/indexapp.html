@@ -171,7 +171,7 @@
                                     <div class="row">
                                         <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
                                             <div class="custom-block bg-white shadow-lg">
-                                                <form action="/predict" method="POST" class="custom-form contact-form">
+                                                <form action="/predict" method="POST" class="custom-form contact-form" id="predictTextForm">
                                                     <div class="form-group form-floating">
                                                         <h5 style="padding-bottom: 10px;">Introducir opinión:</h5>
                                                         <label for="text"></label>
@@ -217,7 +217,7 @@
                                     <div class="row">
                                         <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
                                             <div class="custom-block bg-white shadow-lg">
-                                                <form action="/predict" method="POST" class="custom-form contact-form">
+                                                <form action="/predict" method="POST" class="custom-form contact-form" id="predictForm">
                                             
                                                     <div class="form-group form-floating mb-3">
                                                         <h5 style="padding-bottom: 10px;">Subir archivo de opiniones:</h5>
@@ -280,7 +280,7 @@
                                     <div class="row">
                                         <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
                                             <div class="custom-block bg-white shadow-lg p-4">
-                                                <form action="/retrain" method="POST" class="custom-form contact-form">
+                                                <form action="/retrain" method="POST" class="custom-form contact-form" id="retrainForm">
                                                     <div class="form-group form-floating mb-3">
                                                         <h5 style="padding-bottom: 10px;">Subir archivo de textos:</h5>
                                                         <label for="texts_file"></label>
@@ -298,19 +298,21 @@
                                                     </div>
                                                 </form>
                                 
-                                                {% if metrics %}
-                                                    <div class="mb-0">
-                                                        <h5>Métricas obtenidas:</h5>
-                                                        <div style="padding: 30px;">
-                                                            <ul>
-                                                                <li><b>Precisión:</b> {{ metrics.precision }}</li>
-                                                                <li><b>Recall:</b> {{ metrics.recall }}</li>
-                                                                <li><b>F1 Score:</b> {{ metrics.f1 }}</li>
-                                                            </ul>
+                                                    <div id="resultsContainer">
+                                                        {% if metrics %}
+                                                        <div class="mb-0">
+                                                            <h5>Métricas obtenidas:</h5>
+                                                            <div style="padding: 30px;">
+                                                                <ul>
+                                                                    <li><b>Precisión:</b> {{ metrics.precision }}</li>
+                                                                    <li><b>Recall:</b> {{ metrics.recall }}</li>
+                                                                    <li><b>F1 Score:</b> {{ metrics.f1 }}</li>
+                                                                </ul>
+                                                            </div>
+                                                            
                                                         </div>
-                                                        
+                                                    {% endif %}
                                                     </div>
-                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -337,9 +339,9 @@
         <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('texts_file').addEventListener('change', function() {
+            document.getElementById('opinion_file').addEventListener('change', function() {
                 const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
-                document.getElementById('texts_file_name').textContent = fileName;
+                document.getElementById('opinion_file_name').textContent = fileName;
             });
         
             document.getElementById('labels_file').addEventListener('change', function() {
@@ -348,6 +350,57 @@
             });
         });
         </script>
+        <script>
+            $(document).ready(function() {
+                // Manejo del formulario de predicción
+                $('#predictForm').on('submit', function(event) {
+                    event.preventDefault(); // Evita la recarga de la página
+        
+                    // Serializa los datos del formulario
+                    const formData = new FormData(this);
+        
+                    // Envía la solicitud AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: $(this).attr('action'),
+                        data: formData,
+                        contentType: false, // Necesario para enviar archivos
+                        processData: false, // Necesario para enviar archivos
+                        success: function(response) {
+                            // Maneja la respuesta (por ejemplo, mostrar resultados)
+                            $('#resultsContainer').html(response); // Asegúrate de tener un contenedor para mostrar resultados
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            alert('Ocurrió un error al enviar el formulario.');
+                        }
+                    });
+                });
+        
+                // Manejo del formulario de reentrenamiento
+                $('#retrainForm').on('submit', function(event) {
+                    event.preventDefault(); // Evita la recarga de la página
+        
+                    const formData = new FormData(this);
+        
+                    $.ajax({
+                        type: 'POST',
+                        url: $(this).attr('action'),
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            $('#resultsContainer').html(response); // Asegúrate de tener un contenedor para mostrar resultados
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            alert('Ocurrió un error al enviar el formulario.');
+                        }
+                    });
+                });
+            });
+        </script>
+        
         
         <!-- JAVASCRIPT FILES
         <script src="jquery.min.js"></script>
