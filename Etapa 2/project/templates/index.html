@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Predicciones ODS</title>
+</head>
+<body>
+    <h1>Predicción de ODS</h1>
+    
+    <form action="/predict" method="POST">
+        <label for="text">Texto:</label>
+        <textarea name="text" id="text" required></textarea>
+        <button type="submit">Predecir</button>
+    </form>
+
+    {% if prediction %}
+        <h2>Predicción: {{ prediction.predictions[0] }}</h2>
+        <h3>Probabilidad: {{ prediction.probabilities[0] }}</h3>
+    {% endif %}
+
+    <h1>Reentrenar Modelo</h1>
+    
+    <form action="/retrain" method="POST">
+        <label for="texts">Textos:</label>
+        <textarea name="texts" id="texts" required></textarea>
+        <label for="labels">Etiquetas:</label>
+        <textarea name="labels" id="labels" required></textarea>
+        <button type="submit">Reentrenar</button>
+    </form>
+
+    {% if metrics %}
+        <h2>Métricas:</h2>
+        <ul>
+            <li>Precisión: {{ metrics.precision }}</li>
+            <li>Recall: {{ metrics.recall }}</li>
+            <li>F1 Score: {{ metrics.f1 }}</li>
+        </ul>
+    {% endif %}
+</body>
+</html>
