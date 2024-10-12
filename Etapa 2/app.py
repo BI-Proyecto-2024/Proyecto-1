@@ -87,9 +87,9 @@ async def retrain(file: UploadFile = File(...)):
             new_data = pd.DataFrame({"text": texts, "label": labels})
 
             # Guardamos los nuevos datos para historial (opcional)
-            if not os.path.exists('data'):
-                os.makedirs('data')
-            new_data.to_excel("data/new_training_data.xlsx", index=False)
+            if not os.path.exists('content'):
+                os.makedirs('content')
+            new_data.to_excel("content/new_training_data.xlsx", index=False)
 
             # Reentrenar el modelo
             pipeline.fit(new_data["text"], new_data["label"])
