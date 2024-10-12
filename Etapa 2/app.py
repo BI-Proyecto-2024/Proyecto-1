@@ -12,8 +12,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-pipeline= joblib.load("pipeline_2.joblib") # Lo estoy probando con un modelo de otros ODS que me pasaron
-# pipeline = joblib.load("modelo_tfidf_randomforest.joblib") # Este es el modelo que se generó en la etapa 2
+CleanTextTransformer = CleanTextTransformer()
+pipeline= joblib.load("pipeline_2.pkl") # Lo estoy probando con un modelo de otros ODS que me pasaron
+#pipeline = joblib.load("best_model.joblib") # Este es el modelo que se generó en la etapa 2
+#pipeline = joblib.load("pipeline.joblib")
+    
 
 templates = Jinja2Templates(directory="templates")
 
@@ -64,7 +67,7 @@ async def retrain(request: RetrainRequest):
         pipeline.fit(new_data["text"], new_data["label"])
         
         # Persistimos el modelo actualizado
-        joblib.dump(pipeline, "pipeline_2.joblib")
+        joblib.dump(pipeline, "modelo_tfidf_randomforest.joblib")
         
         # Realizamos predicciones en los datos nueos para obtener las métricas
         predictions = pipeline.predict(new_data["text"])
