@@ -191,20 +191,27 @@
                                                 </form>
                                             
                                                 {% if prediction %}
-                                                    <h5>Resultados:</h5>
-                                                    <div class="mb-0" style="padding: 30px;">
-                                                        {% for pred, prob in zip(prediction['predictions'], prediction['probabilities']) %}
-                                                            <p><b>Predicción:</b> {{ pred }}</p>
-                                                            <p><b>Probabilidad:</b> {{ prob }}</p>
-                                                            <hr>
+                                                <h5>Resultados:</h5>
+                                                <div class="mb-0" style="padding: 30px;">
+                                                    <h6>Predicciones:</h6>
+                                                    <ul>
+                                                        {% for pred in prediction['predictions'] %}
+                                                            <li>{{ pred }}</li>
                                                         {% endfor %}
-                                                    </div>
-                                                {% elif error %}
-                                                    <h5>Error:</h5>
-                                                    <div class="mb-0" style="padding: 30px;">
-                                                        <p>{{ error }}</p>
-                                                    </div>
-                                                {% endif %}
+                                                    </ul>
+                                                    <h6>Probabilidades:</h6>
+                                                    <ul>
+                                                        {% for prob in prediction['probabilities'] %}
+                                                            <li>{{ prob }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% elif error %}
+                                                <h5>Error:</h5>
+                                                <div class="mb-0" style="padding: 30px;">
+                                                    <p>{{ error }}</p>
+                                                </div>
+                                            {% endif %}
                                             </div>
                                             
                                             
@@ -279,15 +286,6 @@
         <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
         <script src="{{ url_for('static', filename='js/click-scroll.js') }}"></script>
         <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
-
-        <!-- JAVASCRIPT FILES
-        <script src="jquery.min.js"></script>
-        <script src="bootstrap.bundle.min.js"></script>
-        <script src="jquery.sticky.js"></script>
-        <script src="click-scroll.js"></script>
-        <script src="custom.js"></script>
-         -->
-
         <script>
             document.getElementById('texts_file').addEventListener('change', function() {
                 const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
@@ -299,6 +297,15 @@
                 document.getElementById('labels_file_name').textContent = fileName;
             });
         </script>
+
+        <!-- JAVASCRIPT FILES
+        <script src="jquery.min.js"></script>
+        <script src="bootstrap.bundle.min.js"></script>
+        <script src="jquery.sticky.js"></script>
+        <script src="click-scroll.js"></script>
+        <script src="custom.js"></script>
+         -->
+
 
     </body>
 </html>
