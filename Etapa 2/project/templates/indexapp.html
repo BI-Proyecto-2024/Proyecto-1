@@ -191,10 +191,13 @@
                                                 </form>
                                             
                                                 {% if prediction %}
-                                                    <h5>Resultado:</h5>
+                                                    <h5>Resultados:</h5>
                                                     <div class="mb-0" style="padding: 30px;">
-                                                        <p><b>Predicción:</b> {{ prediction['predictions'][0] }}</p>
-                                                        <p><b>Probabilidad:</b> {{ prediction['probabilities'][0] }}</p>
+                                                        {% for pred, prob in zip(prediction['predictions'], prediction['probabilities']) %}
+                                                            <p><b>Predicción:</b> {{ pred }}</p>
+                                                            <p><b>Probabilidad:</b> {{ prob }}</p>
+                                                            <hr>
+                                                        {% endfor %}
                                                     </div>
                                                 {% elif error %}
                                                     <h5>Error:</h5>
@@ -203,6 +206,7 @@
                                                     </div>
                                                 {% endif %}
                                             </div>
+                                            
                                             
                                         </div>
 
