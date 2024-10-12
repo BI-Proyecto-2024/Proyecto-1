@@ -35,7 +35,7 @@ def predict():
     response = requests.post(f"{API_URL}/predict", files=files, data=data)
     prediction = response.json()
 
-    return render_template('indexapp.html', prediction=prediction)
+    return prediction
 
 @app.route('/retrain', methods=['POST'])
 def retrain():
@@ -50,7 +50,7 @@ def retrain():
     response = requests.post(f"{API_URL}/retrain", files=files)
     metrics = response.json()
 
-    return render_template('indexapp.html', metrics=metrics)
+    return metrics
 
 if __name__ == '__main__':
     app.run(debug=True)
