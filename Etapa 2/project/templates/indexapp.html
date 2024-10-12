@@ -16,13 +16,11 @@
 
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
                         
-        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
-        <link rel="stylesheet" href="bootstrap.min.css">
-        <link rel="stylesheet" href="bootstrap-icons.css">
-        <link rel="stylesheet" href="styles.css">
+        <!--<link rel="stylesheet" href="bootstrap.min.css">
+        <link rel="stylesheet" href="styles.css">-->
 
     </head>
     
@@ -252,11 +250,11 @@
 
 
         <!-- JAVASCRIPT FILES -->
-        <script src="jquery.min.js"></script>
-        <script src="bootstrap.bundle.min.js"></script>
-        <script src="jquery.sticky.js"></script>
-        <script src="click-scroll.js"></script>
-        <script src="custom.js"></script>
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/click-scroll.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 
     </body>
 </html>
