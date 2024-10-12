@@ -89,7 +89,7 @@ async def retrain(file: UploadFile = File(...)):
             # Guardamos los nuevos datos para historial (opcional)
             if not os.path.exists('data'):
                 os.makedirs('data')
-            new_data.to_csv("data/new_training_data.csv", index=False)
+            new_data.to_excel("data/new_training_data.xlsx", index=False)
 
             # Reentrenar el modelo
             pipeline.fit(new_data["text"], new_data["label"])
