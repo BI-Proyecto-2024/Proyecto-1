@@ -5,7 +5,7 @@ import joblib
 import pandas as pd
 from sklearn.metrics import precision_score, recall_score, f1_score
 import os
-from CleanTextTransformer import CleanTextTransformer
+from text_preprocessing import aplicar_procesamiento
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from enum import Enum
@@ -18,7 +18,6 @@ class RetrainMethod(str, Enum):
 
 app = FastAPI()
 
-CleanTextTransformer = CleanTextTransformer()
 pipeline= joblib.load("pipeline_2.pkl") # Pipeline con el modelo y el preprocesamiento
 
     
