@@ -243,7 +243,8 @@
                                                     </div>
                                                 </form>
                                             
-                                                {% if prediction %}
+                                                {% if results %}
+                                                {% for result in results%}
                                                 <h5>Resultados:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
                                                     <h6>Predicciones:</h6>
@@ -258,7 +259,16 @@
                                                             <li>{{ prob }}</li>
                                                         {% endfor %}
                                                     </ul>
+                                                    <h6>KeyWords:</h6>
+                                                    <ul>
+                                                        <li>
+                                                        {% for word in prediction['texto'] %}
+                                                            {{word}},
+                                                        {% endfor %}
+                                                        </li>
+                                                    </ul>
                                                 </div>
+                                                {% endfor %}
                                             {% elif error %}
                                                 <h5>Error:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
@@ -340,6 +350,7 @@
         <script src="{{ url_for('static', filename='js/click-scroll.js') }}"></script>
         <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
         <script>
+        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('texts_file').addEventListener('change', function() {
                 const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
                 document.getElementById('texts_file_name').textContent = fileName;
@@ -349,6 +360,7 @@
                 const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
                 document.getElementById('labels_file_name').textContent = fileName;
             });
+        });
         </script>
         
         <!-- JAVASCRIPT FILES
