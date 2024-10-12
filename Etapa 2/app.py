@@ -8,14 +8,19 @@ import os
 from CleanTextTransformer import CleanTextTransformer
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+from enum import Enum
+
+class RetrainMethod(str, Enum):
+    FULL_RETRAINING = "full_retraining"
+    INCREMENTAL_RETRAINING = "incremental_retraining"
+    TRANSFER_LEARNING = "transfer_learning"
 
 
 app = FastAPI()
 
 CleanTextTransformer = CleanTextTransformer()
-pipeline= joblib.load("pipeline_2.pkl") # Lo estoy probando con un modelo de otros ODS que me pasaron
-#pipeline = joblib.load("best_model.joblib") # Este es el modelo que se generó en la etapa 2
-#pipeline = joblib.load("pipeline.joblib")
+pipeline= joblib.load("pipeline_2.pkl") # Pipeline con el modelo y el preprocesamiento
+
     
 
 templates = Jinja2Templates(directory="templates")
@@ -35,6 +40,7 @@ class PredictionRequest(BaseModel):
     
 # Modelo de la petición de reentrenamiento
 class RetrainRequest(BaseModel):
+    method: RetrainMethod
     texts: List[str]
     labels: List[int]
     
@@ -55,34 +61,48 @@ async def predict(request: PredictionRequest):
 @app.post("/retrain")
 async def retrain(request: RetrainRequest):
     try:
-        # Preparamos los datos para el reetnrenamiento
+        # Preparamos los datos para el reentrenamiento
         new_data = pd.DataFrame({"text": request.texts, "label": request.labels})
-        
-        # Guardamos los nueos datos para historial
+
+        # Guardamos los nuevos datos para historial
         if not os.path.exists('data'):
             os.makedirs('data')
         new_data.to_csv('data/new_training_data.csv', index=False)
-        
-        # Reentrena el modelo usando el pipeline con los nuevos datos
-        pipeline.fit(new_data["text"], new_data["label"])
-        
+
+        # Determinamos el método de reentrenamiento
+        if request.method == RetrainMethod.FULL_RETRAINING:
+            # Reentrenamiento completo
+            pipeline.fit(new_data["text"], new_data["label"])
+
+        elif request.method == RetrainMethod.INCREMENTAL_RETRAINING:
+            # Reentrenamiento incremental
+            # Aquí asumimos que el modelo ya está entrenado y solo se añaden los nuevos datos
+            existing_data = pd.read_csv('data/new_training_data.csv')
+            all_data = pd.concat([existing_data, new_data], ignore_index=True)
+            pipeline.fit(all_data["text"], all_data["label"])
+
+        elif request.method == RetrainMethod.TRANSFER_LEARNING:
+            # Transfer learning
+            # En este caso, estamos asumiendo que el modelo se ajusta con los nuevos datos
+            # La lógica es similar a un reentrenamiento completo, pero se puede ajustar más si se desea
+            pipeline.fit(new_data["text"], new_data["label"])
+
         # Persistimos el modelo actualizado
-        joblib.dump(pipeline, "modelo_tfidf_randomforest.joblib")
-        
-        # Realizamos predicciones en los datos nueos para obtener las métricas
+        joblib.dump(pipeline, "pipeline_2.pkl")
+
+        # Realizamos predicciones en los datos nuevos para obtener las métricas
         predictions = pipeline.predict(new_data["text"])
-        
+
         # Calculamos las métricas
         precision = precision_score(new_data["label"], predictions, average='weighted')
         recall = recall_score(new_data["label"], predictions, average='weighted')
         f1 = f1_score(new_data["label"], predictions, average='weighted')
-        
+
         return {
             "precision": precision,
             "recall": recall,
             "f1": f1
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'Error reentrenando modelo: {e}')
-
