@@ -16,15 +16,15 @@
 
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
                         
-        
+        <!--
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-        
+        -->
 
-        <!--
+        
         <link rel="stylesheet" href="bootstrap.min.css">
         <link rel="stylesheet" href="styles.css">
-        -->
+        
 
     </head>
     
@@ -148,7 +148,11 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab" aria-controls="design-tab-pane" aria-selected="true">Análisis de Opiniones</button>
+                                <button class="nav-link active" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab" aria-controls="design-tab-pane" aria-selected="true">Análisis de Opiniones (texto)</button>
+                            </li>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="designtwo-tab" data-bs-toggle="tab" data-bs-target="#designtwo-tab-pane" type="button" role="tab" aria-controls="designtwo-tab-pane" aria-selected="true">Análisis de Opiniones</button>
                             </li>
 
                             <li class="nav-item" role="presentation">
@@ -163,7 +167,56 @@
 
                         <div class="col-12">
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
+                                <div class="tab-pane fade show active" id="designtwo-tab-pane" role="tabpanel" aria-labelledby="designtwo-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <form action="/predict" method="POST" class="custom-form contact-form">
+                                                    <div class="form-group form-floating">
+                                                        <h5 style="padding-bottom: 10px;">Introducir opinión:</h5>
+                                                        <label for="text"></label>
+                                                        <textarea name="text" id="text" placeholder="Opinión" class="form-control" rows="5"></textarea>
+                                                    </div>
+                                            
+                                                    
+                                            
+                                                    <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
+                                                        <button type="submit" class="btn custom-btn">Predecir</button>
+                                                    </div>
+                                                </form>
+                                            
+                                                {% if prediction %}
+                                                <h5>Resultados:</h5>
+                                                <div class="mb-0" style="padding: 30px;">
+                                                    <h6>Predicciones:</h6>
+                                                    <ul>
+                                                        {% for pred in prediction['predictions'] %}
+                                                            <li>{{ pred }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    <h6>Probabilidades:</h6>
+                                                    <ul>
+                                                        {% for prob in prediction['probabilities'] %}
+                                                            <li>{{ prob }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% elif error %}
+                                                <h5>Error:</h5>
+                                                <div class="mb-0" style="padding: 30px;">
+                                                    <p>{{ error }}</p>
+                                                </div>
+                                            {% endif %}
+                                            </div>
+                                            
+                                            
+                                        </div>
+
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="design-tab-pane" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
                                     <div class="row">
                                         <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
                                             <div class="custom-block bg-white shadow-lg">
@@ -280,7 +333,7 @@
 
 
 
-        
+        <!-- JAVASCRIPT FILES
         <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
@@ -297,14 +350,25 @@
                 document.getElementById('labels_file_name').textContent = fileName;
             });
         </script>
-
-        <!-- JAVASCRIPT FILES
+        -->
+        
         <script src="jquery.min.js"></script>
         <script src="bootstrap.bundle.min.js"></script>
         <script src="jquery.sticky.js"></script>
         <script src="click-scroll.js"></script>
         <script src="custom.js"></script>
-         -->
+        <script>
+            document.getElementById('texts_file').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
+                document.getElementById('texts_file_name').textContent = fileName;
+            });
+        
+            document.getElementById('labels_file').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
+                document.getElementById('labels_file_name').textContent = fileName;
+            });
+        </script>
+        
 
 
     </body>
