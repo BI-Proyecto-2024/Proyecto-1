@@ -148,11 +148,9 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="designtwo-tab" data-bs-toggle="tab" data-bs-target="#designtwo-tab-pane" type="button" role="tab" aria-controls="designtwo-tab-pane" aria-selected="true">Análisis de Opiniones (texto)</button>
                             </li>
 
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab" aria-controls="design-tab-pane" aria-selected="true">Análisis de Opiniones</button>
                             </li>
 
                             <li class="nav-item" role="presentation">
@@ -182,7 +180,8 @@
                                                     </div>
                                                 </form>
                                             
-                                                {% if prediction %}
+                                                {% if results %}
+                                                {% for result in results%}
                                                 <h5>Resultados:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
                                                     <h6>Predicciones:</h6>
@@ -193,11 +192,20 @@
                                                     </ul>
                                                     <h6>Probabilidades:</h6>
                                                     <ul>
-                                                        {% for prob in prediction['probabilities'] %}
-                                                            <li>{{ prob }}</li>
+                                                        {% for key, value in result['probabilidades'].items() %}
+                                                            <li>{{ key }}: {{ value }}</li>
                                                         {% endfor %}
                                                     </ul>
+                                                    <h6>KeyWords:</h6>
+                                                    <ul>
+                                                        <li>
+                                                        {% for word in prediction['texto'] %}
+                                                            {{word}},
+                                                        {% endfor %}
+                                                        </li>
+                                                    </ul>
                                                 </div>
+                                                {% endfor %}
                                             {% elif error %}
                                                 <h5>Error:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
@@ -247,8 +255,8 @@
                                                     </ul>
                                                     <h6>Probabilidades:</h6>
                                                     <ul>
-                                                        {% for prob in prediction['probabilities'] %}
-                                                            <li>{{ prob }}</li>
+                                                        {% for key, value in result['probabilidades'].items() %}
+                                                            <li>{{ key }}: {{ value }}</li>
                                                         {% endfor %}
                                                     </ul>
                                                     <h6>KeyWords:</h6>
@@ -315,7 +323,7 @@
                                                     </div>
                                             </div>
                                         </div>
-                                    </div>
+                                  </div>
 
                                 
                             </div>

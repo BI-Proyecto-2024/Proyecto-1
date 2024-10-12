@@ -36,6 +36,7 @@ async def predict(
         if file:
             # Verificamos si el archivo es un Excel
             if not file.filename.endswith('.xlsx'):
+                print("No se proporcionó texto o archivo")
                 return JSONResponse(content={"error": "El archivo debe ser un Excel (.xlsx)"}, status_code=400)
             
             # Leemos el archivo Excel
@@ -46,6 +47,7 @@ async def predict(
             data = pd.DataFrame({"Textos_espanol": [text_input]})
         
         else:
+            print("No se proporcionó texto o archivo")
             return JSONResponse(content={"error": "No se proporcionó texto o archivo"}, status_code=400)
         
         # Realiza predicciones
