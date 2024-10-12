@@ -148,11 +148,11 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab" aria-controls="design-tab-pane" aria-selected="true">Análisis de Opiniones (texto)</button>
+                                <button class="nav-link" id="designtwo-tab" data-bs-toggle="tab" data-bs-target="#designtwo-tab-pane" type="button" role="tab" aria-controls="designtwo-tab-pane" aria-selected="true">Análisis de Opiniones (texto)</button>
                             </li>
 
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="designtwo-tab" data-bs-toggle="tab" data-bs-target="#designtwo-tab-pane" type="button" role="tab" aria-controls="designtwo-tab-pane" aria-selected="true">Análisis de Opiniones</button>
+                                <button class="nav-link active" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab" aria-controls="design-tab-pane" aria-selected="true">Análisis de Opiniones</button>
                             </li>
 
                             <li class="nav-item" role="presentation">
@@ -177,9 +177,6 @@
                                                         <label for="text"></label>
                                                         <textarea name="text" id="text" placeholder="Opinión" class="form-control" rows="5"></textarea>
                                                     </div>
-                                            
-                                                    
-                                            
                                                     <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
                                                         <button type="submit" class="btn custom-btn">Predecir</button>
                                                     </div>
@@ -221,11 +218,6 @@
                                         <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
                                             <div class="custom-block bg-white shadow-lg">
                                                 <form action="/predict" method="POST" class="custom-form contact-form">
-                                                    <div class="form-group form-floating">
-                                                        <h5 style="padding-bottom: 10px;">Introducir opinión:</h5>
-                                                        <label for="text"></label>
-                                                        <textarea name="text" id="text" placeholder="Opinión" class="form-control" rows="5"></textarea>
-                                                    </div>
                                             
                                                     <div class="form-group form-floating mb-3">
                                                         <h5 style="padding-bottom: 10px;">Subir archivo de opiniones:</h5>
@@ -286,48 +278,42 @@
 
                                 <div class="tab-pane fade" id="marketing-tab-pane" role="tabpanel" aria-labelledby="marketing-tab" tabindex="0">
                                     <div class="row">
-                                        <div class="tab-pane fade show active" id="retrain-tab-pane" role="tabpanel" aria-labelledby="retrain-tab" tabindex="0">
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
-                                                    <div class="custom-block bg-white shadow-lg p-4">
-                                                        <form action="/retrain" method="POST" class="custom-form contact-form">
-                                                            <div class="form-group form-floating mb-3">
-                                                                <h5 style="padding-bottom: 10px;">Subir archivo de textos:</h5>
-                                                                <label for="texts_file"></label>
-                                                                <!-- Hidden File Input -->
-                                                                <input type="file" name="labels_file" id="labels_file" class="form-control" required style="display: none;">
-                                                                
-                                                                <!-- Custom Button to Replace Default "Choose File" Button -->
-                                                                <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('labels_file').click();">Seleccionar archivo de etiquetas</button>
-                                                                
-                                                                <!-- Placeholder to Show Selected File Name -->
-                                                                <span id="labels_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
-                                                            </div>
-                                                            <div style="display: flex; justify-content: flex-end;">
-                                                                <button type="submit" class="btn custom-btn">Reentrenar</button>
-                                                            </div>
-                                                        </form>
-                                        
-                                                        {% if metrics %}
-                                                            <div class="mb-0">
-                                                                <h5>Métricas obtenidas:</h5>
-                                                                <div style="padding: 30px;">
-                                                                    <ul>
-                                                                        <li><b>Precisión:</b> {{ metrics.precision }}</li>
-                                                                        <li><b>Recall:</b> {{ metrics.recall }}</li>
-                                                                        <li><b>F1 Score:</b> {{ metrics.f1 }}</li>
-                                                                    </ul>
-                                                                </div>
-                                                                
-                                                            </div>
-                                                        {% endif %}
+                                        <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
+                                            <div class="custom-block bg-white shadow-lg p-4">
+                                                <form action="/retrain" method="POST" class="custom-form contact-form">
+                                                    <div class="form-group form-floating mb-3">
+                                                        <h5 style="padding-bottom: 10px;">Subir archivo de textos:</h5>
+                                                        <label for="texts_file"></label>
+                                                        <!-- Hidden File Input -->
+                                                        <input type="file" name="labels_file" id="labels_file" class="form-control" required style="display: none;">
+                                                        
+                                                        <!-- Custom Button to Replace Default "Choose File" Button -->
+                                                        <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('labels_file').click();">Seleccionar archivo de etiquetas</button>
+                                                        
+                                                        <!-- Placeholder to Show Selected File Name -->
+                                                        <span id="labels_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
                                                     </div>
-                                                </div>
+                                                    <div style="display: flex; justify-content: flex-end;">
+                                                        <button type="submit" class="btn custom-btn">Reentrenar</button>
+                                                    </div>
+                                                </form>
+                                
+                                                {% if metrics %}
+                                                    <div class="mb-0">
+                                                        <h5>Métricas obtenidas:</h5>
+                                                        <div style="padding: 30px;">
+                                                            <ul>
+                                                                <li><b>Precisión:</b> {{ metrics.precision }}</li>
+                                                                <li><b>Recall:</b> {{ metrics.recall }}</li>
+                                                                <li><b>F1 Score:</b> {{ metrics.f1 }}</li>
+                                                            </ul>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                         </div>
-                                        
-                                        </div>
-                                  </div>
+                                    </div>
 
                                 
                             </div>
