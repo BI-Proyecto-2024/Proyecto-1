@@ -2,7 +2,8 @@ from flask import Flask, request, render_template
 import requests
 import os
 from werkzeug.utils import secure_filename
-
+from io import BytesIO
+import traceback
 app = Flask(__name__)
 
 API_URL = "http://127.0.0.1:8000"  # Cambia esto a la URL de tu API
@@ -24,17 +25,20 @@ def predict():
     opinion_file = request.files.get('opinion_file')
     files={}
     data={}
-    if opinion_file and allowed_file(opinion_file.filename):
+    prediction= {}
+    try:
+      if opinion_file and allowed_file(opinion_file.filename):
         # Guardar archivo de forma temporal
-        file_path = os.path.join('temp', secure_filename(opinion_file.filename))
-        opinion_file.save(file_path)
+        file_path = BytesIO(opinion_file.read())
         files = {'file': open(file_path, 'rb')}
-    else: 
+      else: 
          data = {'text_input': text}    
 
-    response = requests.post(f"{API_URL}/predict", files=files, data=data)
-    prediction = response.json()
-
+      response = requests.post(f"{API_URL}/predict", files=files, data=data)
+      prediction = response.json()
+    except Exception as e:
+           traceback.print_exc()   
+           return render_template('indexapp.html', error=str(e))
     return prediction
 
 @app.route('/retrain', methods=['POST'])
