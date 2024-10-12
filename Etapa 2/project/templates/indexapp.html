@@ -16,11 +16,15 @@
 
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
                         
+        
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        
 
-        <!--<link rel="stylesheet" href="bootstrap.min.css">
-        <link rel="stylesheet" href="styles.css">-->
+        <!--
+        <link rel="stylesheet" href="bootstrap.min.css">
+        <link rel="stylesheet" href="styles.css">
+        -->
 
     </head>
     
@@ -170,6 +174,18 @@
                                                         <label for="text"></label>
                                                         <textarea name="text" id="text" placeholder="Opinión" class="form-control" rows="5" required></textarea>
                                                     </div>
+
+                                                    <div class="form-group form-floating mb-3">
+                                                        <h5 style="padding-bottom: 10px;">Subir archivo de opiniones:</h5>
+                                                        <label for="opinion_file"></label>
+                                                        <!-- Hidden File Input -->
+                                                        <input type="file" name="opinion_file" id="opinion_file" class="form-control" accept=".txt,.csv" style="display: none;">
+                                                        <!-- Custom Button to Replace Default "Choose File" Button -->
+                                                        <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('opinion_file').click();">Seleccionar archivo de opiniones</button>
+                                                        <!-- Placeholder to Show Selected File Name -->
+                                                        <span id="opinion_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
+                                                    </div>
+
                                                     <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
                                                         <button type="submit" class="btn custom-btn">Predecir</button>
                                                     </div>
@@ -197,17 +213,18 @@
                                             <div class="row">
                                                 <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
                                                     <div class="custom-block bg-white shadow-lg p-4">
-                                        
                                                         <form action="/retrain" method="POST" class="custom-form contact-form">
                                                             <div class="form-group form-floating mb-3">
-                                                                <h5 style="padding-bottom: 10px;">Introducir texto:</h5>
-                                                                <label for="texts"></label>
-                                                                <textarea name="texts" id="texts" placeholder="Ingresa los textos" class="form-control" rows="5" required></textarea>
-                                                            </div>
-                                                            <div class="form-group form-floating mb-3">
-                                                                <h5 style="padding-bottom: 10px;">Introducir etiquetas:</h5>
-                                                                <label for="labels"></label>
-                                                                <textarea name="labels" id="labels" placeholder="Ingresa las etiquetas" class="form-control" rows="5" required></textarea>
+                                                                <h5 style="padding-bottom: 10px;">Subir archivo de textos:</h5>
+                                                                <label for="texts_file"></label>
+                                                                <!-- Hidden File Input -->
+                                                                <input type="file" name="labels_file" id="labels_file" class="form-control" accept=".txt,.csv" required style="display: none;">
+                                                                
+                                                                <!-- Custom Button to Replace Default "Choose File" Button -->
+                                                                <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('labels_file').click();">Seleccionar archivo de etiquetas</button>
+                                                                
+                                                                <!-- Placeholder to Show Selected File Name -->
+                                                                <span id="labels_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
                                                             </div>
                                                             <div style="display: flex; justify-content: flex-end;">
                                                                 <button type="submit" class="btn custom-btn">Reentrenar</button>
@@ -249,12 +266,32 @@
 
 
 
-        <!-- JAVASCRIPT FILES -->
+        
         <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/jquery.sticky.js') }}"></script>
         <script src="{{ url_for('static', filename='js/click-scroll.js') }}"></script>
         <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+        <!-- JAVASCRIPT FILES
+        <script src="jquery.min.js"></script>
+        <script src="bootstrap.bundle.min.js"></script>
+        <script src="jquery.sticky.js"></script>
+        <script src="click-scroll.js"></script>
+        <script src="custom.js"></script>
+         -->
+
+        <script>
+            document.getElementById('texts_file').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
+                document.getElementById('texts_file_name').textContent = fileName;
+            });
+        
+            document.getElementById('labels_file').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
+                document.getElementById('labels_file_name').textContent = fileName;
+            });
+        </script>
 
     </body>
 </html>
