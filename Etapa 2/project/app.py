@@ -60,7 +60,7 @@ def retrain():
     response = requests.post(f"{API_URL}/retrain", files=files)
     metrics = response.json()
 
-    return metrics
+    return jsonify(metrics)
 
 if __name__ == '__main__':
     app.run(debug=True)
