@@ -182,7 +182,8 @@
                                                     </div>
                                                 </form>
                                             
-                                                {% if prediction %}
+                                                <div id="resultsContainer">
+                                                    {% if prediction %}
                                                 <h5>Resultados:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
                                                     <h6>Predicciones:</h6>
@@ -204,6 +205,7 @@
                                                     <p>{{ error }}</p>
                                                 </div>
                                             {% endif %}
+                                                </div>
                                             </div>
                                             
                                             
@@ -235,7 +237,8 @@
                                                     </div>
                                                 </form>
                                             
-                                                {% if results %}
+                                                <div id="resultsContainer">
+                                                    {% if results %}
                                                 {% for result in results%}
                                                 <h5>Resultados:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
@@ -267,6 +270,7 @@
                                                     <p>{{ error }}</p>
                                                 </div>
                                             {% endif %}
+                                                </div>
                                             </div>
                                             
                                             
