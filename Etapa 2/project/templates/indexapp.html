@@ -359,10 +359,10 @@
                 // Manejo del formulario de predicción
                 $('#predictForm').on('submit', function(event) {
                     event.preventDefault(); // Evita la recarga de la página
-        
+
                     // Serializa los datos del formulario
                     const formData = new FormData(this);
-        
+
                     // Envía la solicitud AJAX
                     $.ajax({
                         type: 'POST',
@@ -370,66 +370,43 @@
                         data: formData,
                         contentType: false, // Necesario para enviar archivos
                         processData: false, // Necesario para enviar archivos
+                        dataType: 'json', // Especifica que esperas una respuesta JSON
                         success: function(response) {
-                            // Muestra los resultados en el contenedor de resultados
-                            let resultsHtml = '<h5>Resultados:</h5><div style="padding: 30px;">';
-                            
-                            if (response.predictions) {
-                                resultsHtml += '<h6>Predicciones:</h6><ul>';
-                                response.predictions.forEach(pred => {
-                                    resultsHtml += `<li>${pred}</li>`;
-                                });
-                                resultsHtml += '</ul>';
+                            // Asegúrate de que la respuesta tenga las propiedades esperadas
+                            if (response.predictions || response.probabilities) {
+                                let resultsHtml = '<h5>Resultados:</h5><div style="padding: 30px;">';
+
+                                if (response.predictions) {
+                                    resultsHtml += '<h6>Predicciones:</h6><ul>';
+                                    response.predictions.forEach(pred => {
+                                        resultsHtml += `<li>${pred}</li>`;
+                                    });
+                                    resultsHtml += '</ul>';
+                                }
+
+                                if (response.probabilities) {
+                                    resultsHtml += '<h6>Probabilidades:</h6><ul>';
+                                    response.probabilities.forEach(prob => {
+                                        resultsHtml += `<li>${prob}</li>`;
+                                    });
+                                    resultsHtml += '</ul>';
+                                }
+
+                                resultsHtml += '</div>';
+                                $('#resultsContainer').html(resultsHtml); // Actualiza el contenedor de resultados
+                            } else {
+                                // Manejo de errores si no hay resultados esperados
+                                $('#resultsContainer').html('<h5>Error:</h5><p>No se encontraron resultados.</p>');
                             }
-                            
-                            if (response.probabilities) {
-                                resultsHtml += '<h6>Probabilidades:</h6><ul>';
-                                response.probabilities.forEach(prob => {
-                                    resultsHtml += `<li>${prob}</li>`;
-                                });
-                                resultsHtml += '</ul>';
-                            }
-        
-                            resultsHtml += '</div>';
-                            $('#resultsContainer').html(resultsHtml); // Actualiza el contenedor de resultados
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
-                            alert('Ocurrió un error al enviar el formulario.');
-                        }
-                    });
-                });
-        
-                // Manejo del formulario de reentrenamiento
-                $('#retrainForm').on('submit', function(event) {
-                    event.preventDefault(); // Evita la recarga de la página
-        
-                    const formData = new FormData(this);
-        
-                    $.ajax({
-                        type: 'POST',
-                        url: $(this).attr('action'),
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function(response) {
-                            // Muestra las métricas en el contenedor de resultados
-                            let metricsHtml = '<div style="padding: 30px;">';
-                            metricsHtml += '<h5>Métricas obtenidas:</h5><ul>';
-                            metricsHtml += `<li><b>Precisión:</b> ${response.precision}</li>`;
-                            metricsHtml += `<li><b>Recall:</b> ${response.recall}</li>`;
-                            metricsHtml += `<li><b>F1 Score:</b> ${response.f1}</li>`;
-                            metricsHtml += '</ul></div>';
-        
-                            $('#resultsContainer').html(metricsHtml); // Actualiza el contenedor de resultados
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            alert('Ocurrió un error al enviar el formulario.');
+                            alert('Ocurrió un error al enviar el formulario.'); // Mensaje genérico de error
                         }
                     });
                 });
             });
+
         </script>
         
         
