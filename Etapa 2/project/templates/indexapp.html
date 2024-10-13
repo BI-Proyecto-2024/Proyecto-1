@@ -371,8 +371,27 @@
                         contentType: false, // Necesario para enviar archivos
                         processData: false, // Necesario para enviar archivos
                         success: function(response) {
-                            // Maneja la respuesta (por ejemplo, mostrar resultados)
-                            $('#resultsContainer').html(response); // Asegúrate de tener un contenedor para mostrar resultados
+                            // Muestra los resultados en el contenedor de resultados
+                            let resultsHtml = '<h5>Resultados:</h5><div style="padding: 30px;">';
+                            
+                            if (response.predictions) {
+                                resultsHtml += '<h6>Predicciones:</h6><ul>';
+                                response.predictions.forEach(pred => {
+                                    resultsHtml += `<li>${pred}</li>`;
+                                });
+                                resultsHtml += '</ul>';
+                            }
+                            
+                            if (response.probabilities) {
+                                resultsHtml += '<h6>Probabilidades:</h6><ul>';
+                                response.probabilities.forEach(prob => {
+                                    resultsHtml += `<li>${prob}</li>`;
+                                });
+                                resultsHtml += '</ul>';
+                            }
+        
+                            resultsHtml += '</div>';
+                            $('#resultsContainer').html(resultsHtml); // Actualiza el contenedor de resultados
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -394,7 +413,15 @@
                         contentType: false,
                         processData: false,
                         success: function(response) {
-                            $('#resultsRContainer').html(response); // Asegúrate de tener un contenedor para mostrar resultados
+                            // Muestra las métricas en el contenedor de resultados
+                            let metricsHtml = '<div style="padding: 30px;">';
+                            metricsHtml += '<h5>Métricas obtenidas:</h5><ul>';
+                            metricsHtml += `<li><b>Precisión:</b> ${response.precision}</li>`;
+                            metricsHtml += `<li><b>Recall:</b> ${response.recall}</li>`;
+                            metricsHtml += `<li><b>F1 Score:</b> ${response.f1}</li>`;
+                            metricsHtml += '</ul></div>';
+        
+                            $('#resultsContainer').html(metricsHtml); // Actualiza el contenedor de resultados
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -404,6 +431,7 @@
                 });
             });
         </script>
+        
         
         
         <!-- JAVASCRIPT FILES
