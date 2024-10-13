@@ -133,4 +133,5 @@ async def retrain(file: UploadFile = File(...)):
 }, status_code=200)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error durante el reentrenamiento: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error durante el reentrenamiento: {e}")

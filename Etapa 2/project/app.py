@@ -11,7 +11,7 @@ API_URL = "http://127.0.0.1:8000"  # Cambia esto a la URL de tu API
 
 # Función para verificar extensiones de archivos permitidos
 def allowed_file(filename):
-    allowed_extensions = {'xlsx','.csv'}
+    allowed_extensions = {'xlsx','csv'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 
@@ -41,7 +41,7 @@ def predict():
         response = requests.post(f"{API_URL}/predict", files=files, data=data)
         response.raise_for_status()  # Lanza un error si la respuesta es 4xx o 5xx
         prediction = response.json()
-        return jsonify(prediction)  # Asegúrate de devolver el JSON aquí
+        return jsonify(prediction) 
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500  # Devolver error en formato JSON
@@ -53,6 +53,9 @@ def retrain():
     files={}
     if labels_file and allowed_file(labels_file.filename):
         # Guardar archivo de forma temporal
+        temp_dir = 'temp'
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
         file_path = os.path.join('temp', secure_filename(labels_file.filename))
         labels_file.save(file_path)
         files = {'file': open(file_path, 'rb')}

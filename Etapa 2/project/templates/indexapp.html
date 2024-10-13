@@ -182,7 +182,7 @@
                                                     </div>
                                                 </form>
                                             
-                                                <div id="resultsContainer">
+                                                <div id="resultsContainer2">
                                                     {% if prediction %}
                                                 <h5>Resultados:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
@@ -287,7 +287,7 @@
                                                 <form action="/retrain" method="POST" class="custom-form contact-form" id="retrainForm">
                                                     <div class="form-group form-floating mb-3">
                                                         <h5 style="padding-bottom: 10px;">Subir archivo de textos:</h5>
-                                                        <label for="texts_file"></label>
+                                                        <label for="labels_file"></label>
                                                         <!-- Hidden File Input -->
                                                         <input type="file" name="labels_file" id="labels_file" class="form-control" required style="display: none;">
                                                         
@@ -321,7 +321,6 @@
                                         </div>
                                     </div>
 
-                                
                             </div>
 
                     </div>
@@ -356,58 +355,62 @@
         </script>
         <script>
             $(document).ready(function() {
-            // Manejo del formulario de predicción
-            $('#predictForm').on('submit', function(event) {
-                event.preventDefault(); // Evita la recarga de la página
-
-                // Serializa los datos del formulario
-                const formData = new FormData(this);
-
-                // Envía la solicitud AJAX
-                $.ajax({
-                    type: 'POST',
-                    url: $(this).attr('action'),
-                    data: formData,
-                    contentType: false, // Necesario para enviar archivos
-                    processData: false, // Necesario para enviar archivos
-                    dataType: 'json', // Especifica que esperas una respuesta JSON
-                    success: function(response) {
-                        // Asegúrate de que la respuesta tenga las propiedades esperadas
-                        if (response.predictions || response.probabilities) {
-                            let resultsHtml = '<h5>Resultados:</h5><div style="padding: 30px;">';
-
-                            if (response.predictions) {
-                                resultsHtml += '<h6>Predicciones:</h6><ul>';
-                                response.predictions.forEach(pred => {
-                                    resultsHtml += `<li>${pred}</li>`;
+                // Manejo del formulario de predicción
+                $('#predictForm').on('submit', function(event) {
+                    event.preventDefault(); // Evita la recarga de la página
+        
+                    // Serializa los datos del formulario
+                    const formData = new FormData(this);
+        
+                    // Envía la solicitud AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: $(this).attr('action'),
+                        data: formData,
+                        contentType: false, // Necesario para enviar archivos
+                        processData: false, // Necesario para enviar archivos
+                        dataType: 'json', // Espera una respuesta JSON
+                        success: function(response) {
+                            // Verifica si hay resultados en la respuesta
+                            if (response.results && response.results.length > 0) {
+                                let resultsHtml = '<h5>Resultados:</h5><div style="padding: 30px;">';
+        
+                                // Procesa cada resultado
+                                response.results.forEach(result => {
+                                    // Muestra la predicción
+                                    resultsHtml += `<h6>Predicción: ${result.prediccion}</h6>`;
+                                    
+                                    // Muestra las probabilidades
+                                    resultsHtml += '<h6>Probabilidades:</h6><ul>';
+                                    for (const [key, value] of Object.entries(result.probabilidades)) {
+                                        resultsHtml += `<li>Clase ${key}: ${value}</li>`;
+                                    }
+                                    resultsHtml += '</ul>';
+        
+                                    // Muestra el texto
+                                    resultsHtml += '<h6>Texto:</h6><ul>';
+                                    result.texto.forEach(t => {
+                                        resultsHtml += `<li>${t}</li>`;
+                                    });
+                                    resultsHtml += '</ul>';
                                 });
-                                resultsHtml += '</ul>';
+        
+                                resultsHtml += '</div>';
+                                $('#resultsContainer').html(resultsHtml); // Actualiza el contenedor de resultados
+                            } else {
+                                // Manejo de errores si no hay resultados esperados
+                                $('#resultsContainer').html('<h5>Error:</h5><p>No se encontraron resultados.</p>');
                             }
-
-                            if (response.probabilities) {
-                                resultsHtml += '<h6>Probabilidades:</h6><ul>';
-                                response.probabilities.forEach(prob => {
-                                    resultsHtml += `<li>${prob}</li>`;
-                                });
-                                resultsHtml += '</ul>';
-                            }
-
-                            resultsHtml += '</div>';
-                            $('#resultsContainer').html(resultsHtml); // Actualiza el contenedor de resultados
-                        } else {
-                            // Manejo de errores si no hay resultados esperados
-                            $('#resultsContainer').html('<h5>Error:</h5><p>No se encontraron resultados.</p>');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            alert('Ocurrió un error al enviar el formulario.'); // Mensaje genérico de error
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                        alert('Ocurrió un error al enviar el formulario.'); // Mensaje genérico de error
-                    }
+                    });
                 });
             });
-        });
-
         </script>
+        
         <script>
             $(document).ready(function() {
                 // Manejo del formulario de reentrenamiento
@@ -424,24 +427,29 @@
                         processData: false, // Necesario para enviar archivos
                         dataType: 'json', // Espera una respuesta JSON
                         success: function(response) {
-                            // Verifica que la respuesta tenga las métricas esperadas
-                            if (response.precision || response.recall || response.f1) {
-                                let metricsHtml = '<div style="padding: 30px;"><h5>Métricas obtenidas:</h5><ul>';
+                            // Accede a las métricas desde la respuesta
+                            const metrics = response.metrics; // Accede al objeto de métricas
+                            let metricsHtml = '<div style="padding: 30px;"><h5>Métricas obtenidas:</h5><ul>';
 
-                                if (response.precision) {
-                                    metricsHtml += `<li><b>Precisión:</b> ${response.precision}</li>`;
-                                }
-                                if (response.recall) {
-                                    metricsHtml += `<li><b>Recall:</b> ${response.recall}</li>`;
-                                }
-                                if (response.f1) {
-                                    metricsHtml += `<li><b>F1 Score:</b> ${response.f1}</li>`;
-                                }
+                            // Verifica y muestra cada métrica individualmente
+                            if (metrics.precision !== undefined) {
+                                metricsHtml += `<li><b>Precisión:</b> ${metrics.precision}</li>`;
+                            }
+                            if (metrics.recall !== undefined) {
+                                metricsHtml += `<li><b>Recall:</b> ${metrics.recall}</li>`;
+                            }
+                            if (metrics.f1_score !== undefined) {
+                                metricsHtml += `<li><b>F1 Score:</b> ${metrics.f1_score}</li>`;
+                            }
 
-                                metricsHtml += '</ul></div>';
-                                $('#resultsRContainer').html(metricsHtml); // Actualiza el contenedor de resultados
-                            } else {
+                            // Cierra la lista
+                            metricsHtml += '</ul></div>';
+
+                            // Si no se han añadido métricas, muestra un mensaje de error
+                            if (metricsHtml === '<div style="padding: 30px;"><h5>Métricas obtenidas:</h5><ul></ul></div>') {
                                 $('#resultsRContainer').html('<h5>Error:</h5><p>No se encontraron métricas.</p>');
+                            } else {
+                                $('#resultsRContainer').html(metricsHtml); // Actualiza el contenedor de resultados
                             }
                         },
                         error: function(xhr, status, error) {
@@ -457,6 +465,7 @@
                     document.getElementById('labels_file_name').textContent = fileName;
                 });
             });
+
 
         </script>
         
