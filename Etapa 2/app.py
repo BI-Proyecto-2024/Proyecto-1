@@ -84,7 +84,7 @@ async def retrain(file: UploadFile = File(...)):
                 raise HTTPException(status_code=400, detail="Se debe proporcionar texto y etiquetas para reentrenar.")
             
             # Reentrena el modelo usando el pipeline con los nuevos datos
-            new_data = pd.DataFrame({"text": texts, "label": labels})
+            new_data = pd.DataFrame({"Textos_espanol": texts, "sdg": labels})
 
             # Guardamos los nuevos datos para historial (opcional)
             if not os.path.exists('content'):
@@ -92,18 +92,18 @@ async def retrain(file: UploadFile = File(...)):
             new_data.to_excel("content/new_training_data.xlsx", index=False)
 
             # Reentrenar el modelo
-            pipeline.fit(new_data["text"], new_data["label"])
+            pipeline.fit(new_data["Textos_espanol"], new_data["sdg"])
 
             # Persistimos el modelo actualizado
             joblib.dump(pipeline, 'pipeline_2.pkl')
 
             # Realiza predicciones en los datos nuevos para obtener las métricas
-            predictions = pipeline.predict(new_data["text"])
+            predictions = pipeline.predict(new_data["Textos_espanol"])
 
             # Calcula métricas
-            precision = precision_score(new_data["label"], predictions, average='weighted')
-            recall = recall_score(new_data["label"], predictions, average='weighted')
-            f1 = f1_score(new_data["label"], predictions, average='weighted')
+            precision = precision_score(new_data["sdg"], predictions, average='weighted')
+            recall = recall_score(new_data["sdg"], predictions, average='weighted')
+            f1 = f1_score(new_data["sdg"], predictions, average='weighted')
 
             return {
                 "precision": precision,
