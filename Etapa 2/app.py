@@ -10,7 +10,7 @@ from text_preprocessing import aplicar_procesamiento
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from io import BytesIO
-
+import traceback
 app = FastAPI()
 
 pipeline= joblib.load("pipeline_2.pkl") # Pipeline con el modelo y el preprocesamiento
@@ -36,6 +36,7 @@ async def predict(
         if file:
             # Verificamos si el archivo es un Excel
             if not file.filename.endswith('.xlsx'):
+                print("No se proporcionó texto o archivo")
                 return JSONResponse(content={"error": "El archivo debe ser un Excel (.xlsx)"}, status_code=400)
             
             # Leemos el archivo Excel
@@ -46,19 +47,38 @@ async def predict(
             data = pd.DataFrame({"Textos_espanol": [text_input]})
         
         else:
+            print("No se proporcionó texto o archivo")
             return JSONResponse(content={"error": "No se proporcionó texto o archivo"}, status_code=400)
         
         # Realiza predicciones
         predictions = pipeline.predict(data['Textos_espanol'])
-        probabilities = pipeline.predict_proba(data['Textos_espanol']).max(axis=1)
+        probabilities = pipeline.predict_proba(data['Textos_espanol'])
+        data["words"]=aplicar_procesamiento(data["Textos_espanol"])
+        data["sdg"]  =predictions
 
         # Convertimos las predicciones y probabilidades a una lista
         predictions_list = predictions.tolist()
         probabilities_list = probabilities.tolist()
+        print(probabilities)
+        # Obtenemos las clases (grupos) del pipeline
+        class_labels = pipeline.classes_.tolist()
 
-        return JSONResponse(content={"predictions": predictions_list, "probabilities": probabilities_list}, status_code=200)
+        # Creamos una lista para almacenar las probabilidades junto con las keywords
+        results = []
+
+        for i in range(len(predictions_list)):
+            # Creamos un diccionario para cada texto
+            palabras= [palabra for lista_palabras in data['words'] for palabra in lista_palabras]
+            result = {
+                'texto': palabras,  # Guarda el texto original
+                'prediccion': predictions_list[i],
+                'probabilidades': {class_labels[j]: probabilities[i][j] for j in range(len(class_labels))}
+            }
+            results.append(result)
+        return JSONResponse(content={"results": results}, status_code=200)
 
     except Exception as e:
+        traceback.print_exc()
         return JSONResponse(content={"error": f"Error durante la predicción: {e}"}, status_code=500)
 
 # Endpoint para reentrenamiento
@@ -105,11 +125,13 @@ async def retrain(file: UploadFile = File(...)):
             recall = recall_score(new_data["sdg"], predictions, average='weighted')
             f1 = f1_score(new_data["sdg"], predictions, average='weighted')
 
-            return {
+            return JSONResponse(content={"metrics": {
                 "precision": precision,
                 "recall": recall,
                 "f1_score": f1
             }
+}, status_code=200)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error durante el reentrenamiento: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error durante el reentrenamiento: {e}")

@@ -9,16 +9,7 @@
 <body>
     <h1>Predicción de ODS</h1>
     
-    <form action="/predict" method="POST">
-        <label for="text">Texto:</label>
-        <textarea name="text" id="text" required></textarea>
-        <button type="submit">Predecir</button>
-    </form>
-
-    {% if prediction %}
-        <h2>Predicción: {{ prediction.predictions[0] }}</h2>
-        <h3>Probabilidad: {{ prediction.probabilities[0] }}</h3>
-    {% endif %}
+    
 
     <h1>Reentrenar Modelo</h1>
     

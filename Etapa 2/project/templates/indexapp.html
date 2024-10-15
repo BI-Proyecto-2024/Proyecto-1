@@ -148,7 +148,11 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab" aria-controls="design-tab-pane" aria-selected="true">Análisis de Opiniones</button>
+                                <button class="nav-link active" id="designtwo-tab" data-bs-toggle="tab" data-bs-target="#designtwo-tab-pane" type="button" role="tab" aria-controls="designtwo-tab-pane" aria-selected="true">Análisis de Opiniones (texto)</button>
+                            </li>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-tab-pane" type="button" role="tab" aria-controls="design-tab-pane" aria-selected="true">Análisis de Opiniones</button>
                             </li>
 
                             <li class="nav-item" role="presentation">
@@ -163,34 +167,23 @@
 
                         <div class="col-12">
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
+                                <div class="tab-pane fade show active" id="designtwo-tab-pane" role="tabpanel" aria-labelledby="designtwo-tab" tabindex="0">
                                     <div class="row">
                                         <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
                                             <div class="custom-block bg-white shadow-lg">
-                                                <form action="/predict" method="POST" class="custom-form contact-form">
+                                                <form action="/predict" method="POST" class="custom-form contact-form" id="predictTextForm">
                                                     <div class="form-group form-floating">
                                                         <h5 style="padding-bottom: 10px;">Introducir opinión:</h5>
                                                         <label for="text"></label>
                                                         <textarea name="text" id="text" placeholder="Opinión" class="form-control" rows="5"></textarea>
                                                     </div>
-                                            
-                                                    <div class="form-group form-floating mb-3">
-                                                        <h5 style="padding-bottom: 10px;">Subir archivo de opiniones:</h5>
-                                                        <label for="opinion_file"></label>
-                                                        <!-- Hidden File Input -->
-                                                        <input type="file" name="opinion_file" id="opinion_file" class="form-control" style="display: none;">
-                                                        <!-- Custom Button to Replace Default "Choose File" Button -->
-                                                        <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('opinion_file').click();">Seleccionar archivo de opiniones</button>
-                                                        <!-- Placeholder to Show Selected File Name -->
-                                                        <span id="opinion_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
-                                                    </div>
-                                            
                                                     <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
                                                         <button type="submit" class="btn custom-btn">Predecir</button>
                                                     </div>
                                                 </form>
                                             
-                                                {% if prediction %}
+                                                <div id="resultsContainer2">
+                                                    {% if prediction %}
                                                 <h5>Resultados:</h5>
                                                 <div class="mb-0" style="padding: 30px;">
                                                     <h6>Predicciones:</h6>
@@ -212,6 +205,72 @@
                                                     <p>{{ error }}</p>
                                                 </div>
                                             {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                        </div>
+
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="design-tab-pane" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
+                                            <div class="custom-block bg-white shadow-lg">
+                                                <form action="/predict" method="POST" class="custom-form contact-form" id="predictForm">
+                                            
+                                                    <div class="form-group form-floating mb-3">
+                                                        <h5 style="padding-bottom: 10px;">Subir archivo de opiniones:</h5>
+                                                        <label for="opinion_file"></label>
+                                                        <!-- Hidden File Input -->
+                                                        <input type="file" name="opinion_file" id="opinion_file" class="form-control" style="display: none;">
+                                                        <!-- Custom Button to Replace Default "Choose File" Button -->
+                                                        <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('opinion_file').click();">Seleccionar archivo de opiniones</button>
+                                                        <!-- Placeholder to Show Selected File Name -->
+                                                        <span id="opinion_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
+                                                    </div>
+                                            
+                                                    <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
+                                                        <button type="submit" class="btn custom-btn">Predecir</button>
+                                                    </div>
+                                                </form>
+                                            
+                                                <div id="resultsContainer">
+                                                    {% if results %}
+                                                {% for result in results%}
+                                                <h5>Resultados:</h5>
+                                                <div class="mb-0" style="padding: 30px;">
+                                                    <h6>Predicciones:</h6>
+                                                    <ul>
+                                                        {% for pred in prediction['predictions'] %}
+                                                            <li>{{ pred }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    <h6>Probabilidades:</h6>
+                                                    <ul>
+                                                        {% for prob in prediction['probabilities'] %}
+                                                            <li>{{ prob }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    <h6>KeyWords:</h6>
+                                                    <ul>
+                                                        <li>
+                                                        {% for word in prediction['texto'] %}
+                                                            {{word}},
+                                                        {% endfor %}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                {% endfor %}
+                                            {% elif error %}
+                                                <h5>Error:</h5>
+                                                <div class="mb-0" style="padding: 30px;">
+                                                    <p>{{ error }}</p>
+                                                </div>
+                                            {% endif %}
+                                                </div>
                                             </div>
                                             
                                             
@@ -223,50 +282,45 @@
 
                                 <div class="tab-pane fade" id="marketing-tab-pane" role="tabpanel" aria-labelledby="marketing-tab" tabindex="0">
                                     <div class="row">
-                                        <div class="tab-pane fade show active" id="retrain-tab-pane" role="tabpanel" aria-labelledby="retrain-tab" tabindex="0">
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
-                                                    <div class="custom-block bg-white shadow-lg p-4">
-                                                        <form action="/retrain" method="POST" class="custom-form contact-form">
-                                                            <div class="form-group form-floating mb-3">
-                                                                <h5 style="padding-bottom: 10px;">Subir archivo de textos:</h5>
-                                                                <label for="texts_file"></label>
-                                                                <!-- Hidden File Input -->
-                                                                <input type="file" name="labels_file" id="labels_file" class="form-control" required style="display: none;">
-                                                                
-                                                                <!-- Custom Button to Replace Default "Choose File" Button -->
-                                                                <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('labels_file').click();">Seleccionar archivo de etiquetas</button>
-                                                                
-                                                                <!-- Placeholder to Show Selected File Name -->
-                                                                <span id="labels_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
-                                                            </div>
-                                                            <div style="display: flex; justify-content: flex-end;">
-                                                                <button type="submit" class="btn custom-btn">Reentrenar</button>
-                                                            </div>
-                                                        </form>
-                                        
-                                                        {% if metrics %}
-                                                            <div class="mb-0">
-                                                                <h5>Métricas obtenidas:</h5>
-                                                                <div style="padding: 30px;">
-                                                                    <ul>
-                                                                        <li><b>Precisión:</b> {{ metrics.precision }}</li>
-                                                                        <li><b>Recall:</b> {{ metrics.recall }}</li>
-                                                                        <li><b>F1 Score:</b> {{ metrics.f1 }}</li>
-                                                                    </ul>
-                                                                </div>
-                                                                
-                                                            </div>
-                                                        {% endif %}
+                                        <div class="col-lg-12 col-md-6 col-12 mb-4 mb-lg-0">
+                                            <div class="custom-block bg-white shadow-lg p-4">
+                                                <form action="/retrain" method="POST" class="custom-form contact-form" id="retrainForm">
+                                                    <div class="form-group form-floating mb-3">
+                                                        <h5 style="padding-bottom: 10px;">Subir archivo de textos:</h5>
+                                                        <label for="labels_file"></label>
+                                                        <!-- Hidden File Input -->
+                                                        <input type="file" name="labels_file" id="labels_file" class="form-control" required style="display: none;">
+                                                        
+                                                        <!-- Custom Button to Replace Default "Choose File" Button -->
+                                                        <button type="button" class="btn custom-btn custom-border-btn" onclick="document.getElementById('labels_file').click();">Seleccionar archivo de etiquetas</button>
+                                                        
+                                                        <!-- Placeholder to Show Selected File Name -->
+                                                        <span id="labels_file_name" class="file-name" style="padding-left: 20px;">Ningún archivo seleccionado</span>
                                                     </div>
-                                                </div>
+                                                    <div style="display: flex; justify-content: flex-end;">
+                                                        <button type="submit" class="btn custom-btn">Reentrenar</button>
+                                                    </div>
+                                                </form>
+                                
+                                                    <div id="resultsRContainer">
+                                                        {% if metrics %}
+                                                        <div class="mb-0">
+                                                            <h5>Métricas obtenidas:</h5>
+                                                            <div style="padding: 30px;">
+                                                                <ul>
+                                                                    <li><b>Precisión:</b> {{ metrics.precision }}</li>
+                                                                    <li><b>Recall:</b> {{ metrics.recall }}</li>
+                                                                    <li><b>F1 Score:</b> {{ metrics.f1 }}</li>
+                                                                </ul>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    {% endif %}
+                                                    </div>
                                             </div>
                                         </div>
-                                        
-                                        </div>
-                                  </div>
+                                    </div>
 
-                                
                             </div>
 
                     </div>
@@ -287,6 +341,143 @@
         <script src="{{ url_for('static', filename='js/click-scroll.js') }}"></script>
         <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
         <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('opinion_file').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
+                document.getElementById('opinion_file_name').textContent = fileName;
+            });
+        
+            document.getElementById('labels_file').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
+                document.getElementById('labels_file_name').textContent = fileName;
+            });
+        });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // Manejo del formulario de predicción
+                $('#predictForm').on('submit', function(event) {
+                    event.preventDefault(); // Evita la recarga de la página
+        
+                    // Serializa los datos del formulario
+                    const formData = new FormData(this);
+        
+                    // Envía la solicitud AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: $(this).attr('action'),
+                        data: formData,
+                        contentType: false, // Necesario para enviar archivos
+                        processData: false, // Necesario para enviar archivos
+                        dataType: 'json', // Espera una respuesta JSON
+                        success: function(response) {
+                            // Verifica si hay resultados en la respuesta
+                            if (response.results && response.results.length > 0) {
+                                let resultsHtml = '<h5>Resultados:</h5><div style="padding: 30px;">';
+        
+                                // Procesa cada resultado
+                                response.results.forEach(result => {
+                                    // Muestra la predicción
+                                    resultsHtml += `<h6>Predicción: ${result.prediccion}</h6>`;
+                                    
+                                    // Muestra las probabilidades
+                                    resultsHtml += '<h6>Probabilidades:</h6><ul>';
+                                    for (const [key, value] of Object.entries(result.probabilidades)) {
+                                        resultsHtml += `<li>Clase ${key}: ${value}</li>`;
+                                    }
+                                    resultsHtml += '</ul>';
+        
+                                    // Muestra el texto
+                                    resultsHtml += '<h6>Texto:</h6><ul>';
+                                    result.texto.forEach(t => {
+                                        resultsHtml += `<li>${t}</li>`;
+                                    });
+                                    resultsHtml += '</ul>';
+                                });
+        
+                                resultsHtml += '</div>';
+                                $('#resultsContainer').html(resultsHtml); // Actualiza el contenedor de resultados
+                            } else {
+                                // Manejo de errores si no hay resultados esperados
+                                $('#resultsContainer').html('<h5>Error:</h5><p>No se encontraron resultados.</p>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            alert('Ocurrió un error al enviar el formulario.'); // Mensaje genérico de error
+                        }
+                    });
+                });
+            });
+        </script>
+        
+        <script>
+            $(document).ready(function() {
+                // Manejo del formulario de reentrenamiento
+                $('#retrainForm').on('submit', function(event) {
+                    event.preventDefault(); // Evita la recarga de la página
+
+                    const formData = new FormData(this); // Serializa los datos del formulario
+
+                    $.ajax({
+                        type: 'POST',
+                        url: $(this).attr('action'),
+                        data: formData,
+                        contentType: false, // Necesario para enviar archivos
+                        processData: false, // Necesario para enviar archivos
+                        dataType: 'json', // Espera una respuesta JSON
+                        success: function(response) {
+                            // Accede a las métricas desde la respuesta
+                            const metrics = response.metrics; // Accede al objeto de métricas
+                            let metricsHtml = '<div style="padding: 30px;"><h5>Métricas obtenidas:</h5><ul>';
+
+                            // Verifica y muestra cada métrica individualmente
+                            if (metrics.precision !== undefined) {
+                                metricsHtml += `<li><b>Precisión:</b> ${metrics.precision}</li>`;
+                            }
+                            if (metrics.recall !== undefined) {
+                                metricsHtml += `<li><b>Recall:</b> ${metrics.recall}</li>`;
+                            }
+                            if (metrics.f1_score !== undefined) {
+                                metricsHtml += `<li><b>F1 Score:</b> ${metrics.f1_score}</li>`;
+                            }
+
+                            // Cierra la lista
+                            metricsHtml += '</ul></div>';
+
+                            // Si no se han añadido métricas, muestra un mensaje de error
+                            if (metricsHtml === '<div style="padding: 30px;"><h5>Métricas obtenidas:</h5><ul></ul></div>') {
+                                $('#resultsRContainer').html('<h5>Error:</h5><p>No se encontraron métricas.</p>');
+                            } else {
+                                $('#resultsRContainer').html(metricsHtml); // Actualiza el contenedor de resultados
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            alert('Ocurrió un error al enviar el formulario de reentrenamiento.'); // Mensaje genérico de error
+                        }
+                    });
+                });
+
+                // Manejo del cambio de archivo para mostrar el nombre del archivo seleccionado
+                document.getElementById('labels_file').addEventListener('change', function() {
+                    const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
+                    document.getElementById('labels_file_name').textContent = fileName;
+                });
+            });
+
+
+        </script>
+        
+        
+        
+        <!-- JAVASCRIPT FILES
+        <script src="jquery.min.js"></script>
+        <script src="bootstrap.bundle.min.js"></script>
+        <script src="jquery.sticky.js"></script>
+        <script src="click-scroll.js"></script>
+        <script src="custom.js"></script>
+        <script>
             document.getElementById('texts_file').addEventListener('change', function() {
                 const fileName = this.files[0] ? this.files[0].name : 'Ningún archivo seleccionado';
                 document.getElementById('texts_file_name').textContent = fileName;
@@ -297,14 +488,7 @@
                 document.getElementById('labels_file_name').textContent = fileName;
             });
         </script>
-
-        <!-- JAVASCRIPT FILES
-        <script src="jquery.min.js"></script>
-        <script src="bootstrap.bundle.min.js"></script>
-        <script src="jquery.sticky.js"></script>
-        <script src="click-scroll.js"></script>
-        <script src="custom.js"></script>
-         -->
+        -->
 
 
     </body>
